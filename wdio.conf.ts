@@ -1,4 +1,7 @@
 import type { Options } from '@wdio/types'
+import allure from 'allure-commandline'
+import * as os from "node:os";
+
 export const config: Options.Testrunner = {
     //
     // ====================
@@ -136,7 +139,23 @@ export const config: Options.Testrunner = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec'],
+    reporters: [
+        "spec",
+        ["allure",
+            {
+                outputDir: "allure-results",
+                disableWebdriverStepsReporting: true,
+                disableWebdriverScreenshotsReporting: true,
+                useCucumberStepReporter: true,
+                reportedEnvironmentVars: {
+                    os_platform: os.platform(),
+                    os_release: os.release(),
+                    os_version: os.version(),
+                    node_version: process.version,
+                },
+            },
+        ],
+    ],
 
     // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {
@@ -257,16 +276,19 @@ export const config: Options.Testrunner = {
     /**
      *
      * Runs after a Cucumber Step.
-     * @param {Pickle.IPickleStep} step             step data
-     * @param {IPickle}            scenario         scenario pickle
+     * @param {Pickle.IPickleStep} _step             step data
+     * @param {IPickle}            _scenario         scenario pickle
      * @param {object}             result           results object containing scenario results
      * @param {boolean}            result.passed    true if scenario has passed
      * @param {string}             result.error     error stack if scenario failed
      * @param {number}             result.duration  duration of scenario in milliseconds
      * @param {object}             context          Cucumber World object
      */
-    // afterStep: function (step, scenario, result, context) {
-    // },
+    afterStep: async function (_step, _scenario, { error, duration, passed }, context) {
+        if (error) {
+            await browser.takeScreenshot();
+        }
+     },
     /**
      *
      * Runs after a Cucumber Scenario.
@@ -317,13 +339,27 @@ export const config: Options.Testrunner = {
     /**
      * Gets executed after all workers got shut down and the process is about to exit. An error
      * thrown in the onComplete hook will result in the test run failing.
-     * @param {object} exitCode 0 - success, 1 - fail
-     * @param {object} config wdio configuration object
-     * @param {Array.<Object>} capabilities list of capabilities details
-     * @param {<Object>} results object containing test results
      */
-    // onComplete: function(exitCode, config, capabilities, results) {
-    // },
+     onComplete: function() {
+            const reportError = new Error('Could not generate Allure report')
+            const generation = allure(['generate', 'allure-results', '--clean'])
+            return new Promise<void>((resolve, reject) => {
+                const generationTimeout = setTimeout(
+                    () => reject(reportError),
+                    5000)
+
+                generation.on('exit', function(exitCode: number) {
+                    clearTimeout(generationTimeout)
+
+                    if (exitCode !== 0) {
+                        return reject(reportError)
+                    }
+
+                    console.log('Allure report successfully generated')
+                    resolve()
+                })
+            })
+     },
     /**
     * Gets executed when a refresh happens.
     * @param {string} oldSessionId session ID of the old session

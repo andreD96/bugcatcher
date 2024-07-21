@@ -146,6 +146,7 @@ export const config: Options.Testrunner = {
                 outputDir: "allure-results",
                 disableWebdriverStepsReporting: true,
                 disableWebdriverScreenshotsReporting: true,
+                useCucumberStepReporter: true,
                 reportedEnvironmentVars: {
                     os_platform: os.platform(),
                     os_release: os.release(),

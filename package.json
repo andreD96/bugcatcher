@@ -11,10 +11,9 @@
     "axios": "^1.7.2",
     "performance-now": "^2.1.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   },
   "scripts": {
-    "wdio": "NODE_OPTIONS='--experimental-specifier-resolution=node' wdio run ./wdio.conf.ts",
     "test:functional": "NODE_OPTIONS='--experimental-specifier-resolution=node' wdio run ./wdio.conf.ts --suite functional",
     "test:api": "NODE_OPTIONS='--experimental-specifier-resolution=node' wdio run ./wdio.conf.ts --suite api"
   }

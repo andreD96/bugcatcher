@@ -5,9 +5,6 @@ import * as path from "node:path";
 
 const isApiSuite = process.argv.includes('--suite') && process.argv[process.argv.indexOf('--suite') + 1] === 'api';
 
-// @ts-ignore
-// @ts-ignore
-// @ts-ignore
 export const config: Options.Testrunner = {
     //
     // ====================

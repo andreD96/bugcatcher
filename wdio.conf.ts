@@ -66,7 +66,7 @@ export const config: Options.Testrunner = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'silent',
+    logLevel: 'info',
     bail: 0,
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,

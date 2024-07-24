@@ -10,6 +10,8 @@
 - [Writing Tests](#writing-tests)
    - [UI Tests](#ui-tests)
    - [API Tests](#api-tests)
+- [Reporting](#reporting)
+- [Configuration](#configuration)
 
 ## Project Overview
 The Bugcatcher project is an automated testing framework utilizing WebdriverIO, Cucumber, and Gherkin syntax. 
@@ -86,6 +88,18 @@ API tests are also written using Gherkin syntax and placed in the features direc
       And the response latency should be below 1000 milliseconds
   ```
 
+## Reporting
+
+This project uses Allure for reporting the test results. The report files are generated automatically thanks to the
+`onComplete()` hook in the configuration. To see the report run the following command:
+
+```sh
+  allure serve
+  ```
+
+The terminal also shows the "spec" reporter, a more concise reporter useful for a local run.
+
+
 ## Configuration
 The WebdriverIO configuration file (wdio.conf.ts) sets up the necessary settings for running your tests. 
 Key configurations include:
@@ -106,6 +120,7 @@ Key configurations include:
   - **afterStep**: Takes a screenshot if a test step fails.
   - **onComplete**: Generates an Allure report after tests complete.
 
-This configuration ensures a structured and efficient test execution process, with clear separation between different types of tests and comprehensive reporting.
+This configuration ensures a structured and efficient test execution process, with clear separation between different
+types of tests and comprehensive reporting.
 
 For detailed customization, you can modify the wdio.conf.ts file according to your project’s requirements.
